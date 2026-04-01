@@ -1,0 +1,84 @@
+body {
+  background-color: #fff8dc;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  text-align: center;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
+.left {
+  width: 600px;
+}
+
+.card {
+  background: #f7f1e3; /* krem */
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+input[type="text"] {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #d8cdb8;
+  border-radius: 8px;
+  background-color: #e8dcc6; /* kremden iki ton koyu */
+  color: #444;
+  outline: none;
+}
+
+input[type="text"]::placeholder {
+  color: #6f6658;
+}
+
+input[type="checkbox"] {
+  transform: scale(1.1);
+  margin-right: 6px;
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #c8a2c8; /* lila */
+  color: white;
+  transition: 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.delete-btn {
+  background-color: #c8a2c8;
+  color: white;
+}
+
+.toggle-btn {
+  background-color: #c8a2c8;
+  color: white;
+}
+
+.add-btn {
+  background-color: #c8a2c8;
+  color: white;
+}
