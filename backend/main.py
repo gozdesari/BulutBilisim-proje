@@ -19,6 +19,7 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "http://51.21.182.182:5173",
         "http://51.21.182.182"
+        "http://gozde-bulut-kutuphane-frontend-2026.s3-website.eu-north-1.amazonaws.com"
     ],
     allow_credentials=True,
     allow_methods=["*"],
