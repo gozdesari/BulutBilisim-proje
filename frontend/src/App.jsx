@@ -4,17 +4,20 @@ import { useEffect, useState } from "react";
 const API_BASE = "http://51.21.182.182:8000";
 
 function App() {
+  // Backend'den gelen kitap listesini tutar
   const [books, setBooks] = useState([]);
+    // Form inputlarını tutar
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [genre, setGenre] = useState("");
   const [isRead, setIsRead] = useState(false);
   const [showForm, setShowForm] = useState(false);
+    // Hata mesajını tutar
   const [error, setError] = useState("");
 
   const fetchBooks = async () => {
     try {
-      const response = await fetch(`${API_BASE}/books`);
+            const response = await fetch("http://127.0.0.1:8000/books");
 
       if (!response.ok) {
         throw new Error("Kitaplar alınamadı.");
@@ -37,17 +40,17 @@ function App() {
     setError("");
 
     try {
-      const response = await fetch(`${API_BASE}/books`, {
+      const response = await fetch("http://127.0.0.1:8000/books",{        
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          title,
-          author,
-          genre,
-          is_read: isRead,
-        }),
+           title: title,
+          author: author,
+          genre: genre,
+          is_read: isRead
+        })
       });
 
       if (!response.ok) {
@@ -70,8 +73,8 @@ function App() {
     setError("");
 
     try {
-      const response = await fetch(`${API_BASE}/books/${bookId}`, {
-        method: "DELETE",
+      const response = await fetch(`http://127.0.0.1:8000/books/${bookId}`, {
+        method: "DELETE"
       });
 
       if (!response.ok) {
@@ -89,7 +92,7 @@ function App() {
     setError("");
 
     try {
-      const response = await fetch(`${API_BASE}/books/${book.id}`, {
+      const response = await fetch(`http://127.0.0.1:8000/books/${book.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -98,8 +101,8 @@ function App() {
           title: book.title,
           author: book.author,
           genre: book.genre,
-          is_read: !book.is_read,
-        }),
+          is_read: !book.is_read
+        })
       });
 
       if (!response.ok) {
@@ -114,29 +117,27 @@ function App() {
   };
 
   return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "0 30px",
-        }}
-      >
-        <h1 className="header">Kişisel Kütüphane</h1>
+  <>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 30px" }}>
+      <h1 className="header">Kişisel Kütüphane</h1>
 
-        <button className="add-btn" onClick={() => setShowForm(!showForm)}>
-          {showForm ? "Kapat" : "Yeni Kitap Ekle"}
-        </button>
-      </div>
+      <button className="add-btn" onClick={() => setShowForm(!showForm)}>
+        {showForm ? "Kapat" : "Yeni Kitap Ekle"}
+      </button>
+    </div>
 
-      <div className="container">
-        <div className="left">
-          {error && <p>{error}</p>}
+    <div className="container">
 
-          {showForm && (
-            <div className="card">
-              <h2>Yeni Kitap</h2>
+      {/* SOL TARAF → KİTAPLAR */}
+      <div className="left">
+
+        {/* BUTON */}
+       
+
+        {/* FORM SADECE AÇILINCA GÖRÜNÜR */}
+        {showForm && (
+          <div className="card">
+            <h2>Yeni Kitap</h2>
 
               <form onSubmit={handleSubmit}>
                 <input
@@ -147,8 +148,7 @@ function App() {
                   required
                 />
 
-                <br />
-                <br />
+                <br /><br />
 
                 <input
                   type="text"
@@ -157,9 +157,7 @@ function App() {
                   onChange={(e) => setAuthor(e.target.value)}
                   required
                 />
-
-                <br />
-                <br />
+                <br /><br />
 
                 <input
                   type="text"
