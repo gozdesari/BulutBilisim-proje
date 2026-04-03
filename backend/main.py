@@ -2,8 +2,8 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from .database import Base, engine, get_db
-from . import models, schemas, crud
+from database import Base, engine, get_db
+import models, schemas, crud
 
 # Veritabanındaki tabloları oluşturur
 Base.metadata.create_all(bind=engine)
@@ -14,7 +14,12 @@ app = FastAPI()
 # Frontend'in backend'e istek atabilmesi için CORS ayarı
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://51.21.182.182:5173",
+        "http://51.21.182.182"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -4,68 +4,77 @@ import { useEffect, useState } from "react";
 const API_BASE = "http://51.21.182.182:8000";
 
 function App() {
-  // Backend'den gelen kitap listesini tutar
   const [books, setBooks] = useState([]);
-    // Form inputlarını tutar
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [genre, setGenre] = useState("");
   const [isRead, setIsRead] = useState(false);
   const [showForm, setShowForm] = useState(false);
-    // Hata mesajını tutar
   const [error, setError] = useState("");
+
+  const getErrorMessage = async (response, fallbackMessage) => {
+    try {
+      const data = await response.json();
+      return data.detail || data.message || fallbackMessage;
+    } catch {
+      return fallbackMessage;
+    }
+  };
 
   const fetchBooks = async () => {
     try {
-            const response = await fetch("http://127.0.0.1:8000/books");
+      setError("");
+      const response = await fetch(`${API_BASE}/books`);
 
       if (!response.ok) {
-        throw new Error("Kitaplar alınamadı.");
+        const message = await getErrorMessage(response, "Kitaplar alınamadı.");
+        throw new Error(message);
       }
 
       const data = await response.json();
       setBooks(data);
     } catch (err) {
       console.error("Kitapları çekme hatası:", err);
-      setError("Kitaplar yüklenemedi.");
+      setError(err.message || "Kitaplar yüklenemedi.");
     }
   };
 
   useEffect(() => {
     fetchBooks();
-  }, []);
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/books",{        
+      const response = await fetch(`${API_BASE}/books`, {
         method: "POST",
         headers: {
-           "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-           title: title,
-          author: author,
-          genre: genre,
-          is_read: isRead
-        })
+          title: title.trim(),
+          author: author.trim(),
+          genre: genre.trim(),
+          is_read: isRead,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error("Kitap eklenemedi.");
+        const message = await getErrorMessage(response, "Kitap eklenemedi.");
+        throw new Error(message);
       }
 
       setTitle("");
       setAuthor("");
       setGenre("");
       setIsRead(false);
-
+      setShowForm(false);
       fetchBooks();
     } catch (err) {
       console.error("Kitap ekleme hatası:", err);
-      setError("Kitap eklenirken hata oluştu.");
+      setError(err.message || "Kitap eklenirken hata oluştu.");
     }
   };
 
@@ -73,18 +82,19 @@ function App() {
     setError("");
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/books/${bookId}`, {
-        method: "DELETE"
+      const response = await fetch(`${API_BASE}/books/${bookId}`, {
+        method: "DELETE",
       });
 
       if (!response.ok) {
-        throw new Error("Kitap silinemedi.");
+        const message = await getErrorMessage(response, "Kitap silinemedi.");
+        throw new Error(message);
       }
 
       fetchBooks();
     } catch (err) {
       console.error("Kitap silme hatası:", err);
-      setError("Kitap silinirken hata oluştu.");
+      setError(err.message || "Kitap silinirken hata oluştu.");
     }
   };
 
@@ -92,7 +102,7 @@ function App() {
     setError("");
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/books/${book.id}`, {
+      const response = await fetch(`${API_BASE}/books/${book.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -100,44 +110,50 @@ function App() {
         body: JSON.stringify({
           title: book.title,
           author: book.author,
-          genre: book.genre,
-          is_read: !book.is_read
-        })
+          genre: book.genre || "",
+          is_read: !book.is_read,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error("Kitap durumu güncellenemedi.");
+        const message = await getErrorMessage(
+          response,
+          "Kitap durumu güncellenemedi."
+        );
+        throw new Error(message);
       }
 
       fetchBooks();
     } catch (err) {
       console.error("Kitap güncelleme hatası:", err);
-      setError("Kitap durumu güncellenirken hata oluştu.");
+      setError(err.message || "Kitap durumu güncellenirken hata oluştu.");
     }
   };
 
   return (
-  <>
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 30px" }}>
-      <h1 className="header">Kişisel Kütüphane</h1>
+    <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0 30px",
+        }}
+      >
+        <h1 className="header">Kişisel Kütüphane</h1>
 
-      <button className="add-btn" onClick={() => setShowForm(!showForm)}>
-        {showForm ? "Kapat" : "Yeni Kitap Ekle"}
-      </button>
-    </div>
+        <button className="add-btn" onClick={() => setShowForm(!showForm)}>
+          {showForm ? "Kapat" : "Yeni Kitap Ekle"}
+        </button>
+      </div>
 
-    <div className="container">
+      <div className="container">
+        <div className="left">
+          {error && <p style={{ marginBottom: "15px", color: "#a94442" }}>{error}</p>}
 
-      {/* SOL TARAF → KİTAPLAR */}
-      <div className="left">
-
-        {/* BUTON */}
-       
-
-        {/* FORM SADECE AÇILINCA GÖRÜNÜR */}
-        {showForm && (
-          <div className="card">
-            <h2>Yeni Kitap</h2>
+          {showForm && (
+            <div className="card">
+              <h2>Yeni Kitap</h2>
 
               <form onSubmit={handleSubmit}>
                 <input
@@ -148,7 +164,8 @@ function App() {
                   required
                 />
 
-                <br /><br />
+                <br />
+                <br />
 
                 <input
                   type="text"
@@ -157,7 +174,9 @@ function App() {
                   onChange={(e) => setAuthor(e.target.value)}
                   required
                 />
-                <br /><br />
+
+                <br />
+                <br />
 
                 <input
                   type="text"
@@ -195,7 +214,7 @@ function App() {
               <div className="card" key={book.id}>
                 <strong>{book.title}</strong>
                 <p>
-                  {book.author} - {book.genre}
+                  {book.author} {book.genre ? `- ${book.genre}` : ""}
                 </p>
                 <p>{book.is_read ? "Okundu" : "Okunmadı"}</p>
 

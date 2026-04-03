@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from . import models, schemas
+import models, schemas
 
 # kitap ekleme
 def create_book(db: Session, book: schemas.BookCreate):
